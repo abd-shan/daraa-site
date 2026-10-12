@@ -1,0 +1,660 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * 1. Official identity primitives
+ *
+ * Source: https://visual-identity.momc.gov.sy/
+ * These are the official Syrian identity colours. Do not edit, extend,
+ * or add "missing" shades here. Components must never reference them
+ * directly — use the semantic tokens below.
+ * ------------------------------------------------------------------ */
+:root {
+  /* Golden Wheat — the identity gold. --wheat-500 is the exact colour of the
+     official logo lockups in public/brand/logos/. */
+  --wheat-900: #988561;
+  --wheat-500: #b9a779;
+  --wheat-100: #edebe0;
+
+  /* Forest — the primary family. */
+  --forest-900: #002623;
+  --forest-500: #054239;
+  --forest-300: #428177;
+
+  /* Charcoal — neutrals. */
+  --charcoal-900: #161616;
+  --charcoal-500: #3d3a3b;
+  --charcoal-100: #ffffff;
+
+  /* Deep Umber. */
+  --umber-900: #260f14;
+  --umber-500: #4a151e;
+  --umber-300: #6b1f2a;
+}
+
+/* ------------------------------------------------------------------ *
+ * 2. Semantic tokens
+ *
+ * PROJECT DESIGN DECISIONS, not official identity. The mapping of an
+ * official colour to a role — and every dark-mode value below — was
+ * chosen by this project and is not endorsed by the ministry.
+ *
+ * Light values are declared plainly first so browsers without
+ * light-dark() still render a complete, accessible light theme.
+ * Contrast is enforced by scripts/check-contrast.mjs.
+ * ------------------------------------------------------------------ */
+:root {
+  color-scheme: light dark;
+
+  --background: #edebe0; /* wheat-100 */
+  --surface: #ffffff; /* charcoal-100 */
+  --foreground: #161616; /* charcoal-900 */
+  --muted-foreground: #3d3a3b; /* charcoal-500 */
+  --muted: #e3dfd0; /* project */
+  --border: #d5d0bf; /* project — decorative dividers only */
+  --border-strong: #857f6c; /* project — control outlines, WCAG 1.4.11 */
+
+  --pattern-ink: #988561; /* wheat-900 */
+
+  --primary: #054239; /* forest-500 */
+  --primary-hover: #002623; /* forest-900 */
+  --primary-foreground: #ffffff; /* charcoal-100 */
+  --secondary: #4a151e; /* umber-500 */
+  --accent: #b9a779; /* wheat-500 */
+  --focus-ring: #054239; /* forest-500 */
+
+  --success: #1f6f4a; /* project */
+  --warning: #7a5300; /* project */
+  --danger: #6b1f2a; /* umber-300 */
+
+  /* The government bar is the same deep forest in both themes. The gold
+     lockup is a fixed colour, so its ground has to be fixed too. */
+  --gov-bar: #002623; /* forest-900 */
+  --gov-bar-foreground: #edebe0; /* wheat-100 */
+
+  /* The governor block. Deep forest in light, identity gold in dark — in
+     dark the government bar and the page background are the same #002623,
+     so a forest card there is invisible against the page. The foreground
+     flips with it: wheat on gold is 2:1 and unreadable. */
+  --office: #002623; /* forest-900 */
+  --office-foreground: #edebe0; /* wheat-100 */
+
+  /* Hero scrim. Unlike the government bar this one IS themed, so the hero
+     melts into the page below it: wheat in light, forest in dark. The
+     foreground has to flip with it — light text on a wheat scrim would be
+     unreadable. Contrast for both is enforced by check-contrast.mjs. */
+  --hero-scrim: #edebe0; /* wheat-100 */
+  --hero-foreground: #161616; /* charcoal-900 */
+  --hero-accent: #054239; /* forest-500 */
+
+  /* Categorical map fill, not a status colour. The map needs an umber that
+     survives both themes: --secondary turns gold in dark, where it would be
+     indistinguishable from --accent, and --danger means "something is
+     wrong". Dark uses the lighter umber so it still reads on a dark
+     surface. */
+  --district-umber: #4a151e; /* umber-500 */
+}
+
+@supports (color: light-dark(#000, #fff)) {
+  :root {
+    --background: light-dark(#edebe0, #002623);
+    --surface: light-dark(#ffffff, #04322c);
+    --foreground: light-dark(#161616, #edebe0);
+    --muted-foreground: light-dark(#3d3a3b, #a9bdb7);
+    --muted: light-dark(#e3dfd0, #054239);
+    --border: light-dark(#d5d0bf, #0e4c42);
+    --border-strong: light-dark(#857f6c, #5f978d);
+
+    /* forest-300 (#428177) is the lightest official forest and reaches only
+       3.10:1 on the dark surface — fine for a shape, not for text. Dark mode
+       therefore uses a project-lightened forest. */
+    --primary: light-dark(#054239, #6aa89d);
+    --primary-hover: light-dark(#002623, #9ecfc5);
+    --primary-foreground: light-dark(#ffffff, #002623);
+    --secondary: light-dark(#4a151e, #b9a779);
+    --accent: light-dark(#b9a779, #b9a779);
+    --focus-ring: light-dark(#054239, #b9a779);
+
+    --success: light-dark(#1f6f4a, #63c295);
+    --warning: light-dark(#7a5300, #e0a94b);
+    --danger: light-dark(#6b1f2a, #e08b93);
+
+    --pattern-ink: light-dark(#988561, #b9a779);
+
+    --office: light-dark(#002623, #b9a779);
+    --office-foreground: light-dark(#edebe0, #161616);
+
+    --hero-scrim: light-dark(#edebe0, #002623);
+    --hero-foreground: light-dark(#161616, #edebe0);
+    --hero-accent: light-dark(#054239, #b9a779);
+
+    --district-umber: light-dark(#4a151e, #6b1f2a); /* umber-500 / umber-300 */
+  }
+}
+
+/* The theme switcher flips these; system preference is handled natively by
+   color-scheme, with no JavaScript and no first-paint flash. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ *
+ * 3. Tailwind utility mapping — bg-background, text-foreground, ...
+ * ------------------------------------------------------------------ */
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-gov-bar: var(--gov-bar);
+  --color-gov-bar-foreground: var(--gov-bar-foreground);
+}
+
+/* ------------------------------------------------------------------ *
+ * 4. Motion
+ *
+ * Two durations and one curve. Government-calm: nothing bounces, nothing
+ * overshoots. Add a third only when a real interaction needs it.
+ * ------------------------------------------------------------------ */
+:root {
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* Lato first, but it only declares U+0030-0039, so it claims the digits
+     and nothing else. Then Qomra (Arabic) with a system Latin fallback —
+     see src/styles/fonts.ts. Latin glyphs are not in Qomra, so the browser
+     falls through per glyph. Order matters: move Lato after Qomra and the
+     digits silently revert. */
+  font-family:
+    var(--font-lato-digits), var(--font-qomra), system-ui, "Segoe UI", Tahoma,
+    sans-serif;
+}
+
+/* ------------------------------------------------------------------ *
+ * 5. Page width
+ *
+ * One class, used by the header, footer, and every band. 1152px read as
+ * a narrow centred strip on a wide monitor; 1536px with padding that
+ * grows keeps the proportions a laptop shows. Paragraphs stay readable
+ * because they are capped by max-w-prose, not by the container.
+ * ------------------------------------------------------------------ */
+.shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 96rem;
+  padding-inline: 1rem;
+}
+
+@media (width >= 40rem) {
+  .shell {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (width >= 64rem) {
+  .shell {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * 6. Official pattern field
+ *
+ * The SVG is used as a MASK, not an image: its colour then comes from
+ * --pattern-ink, so one asset works in both themes and the official file
+ * is never recoloured, filtered, or edited. The source art is a single
+ * sand tone that would be invisible on a light background.
+ *
+ * Fixed, so it reads as paper grain rather than a scrolling wallpaper.
+ * Purely decorative — where mask-image is unsupported it simply does not
+ * render, and nothing else changes.
+ * ------------------------------------------------------------------ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* The colour layer carries the vertical falloff, the mask supplies the
+     shapes. One mask layer, no mask-composite — that property still resolves
+     to legacy WebKit keywords in places and is not worth the ambiguity.
+     Strong at the top, gone by the bottom, so content sits on clean ground. */
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--pattern-ink) 10%, transparent) 0%,
+    color-mix(in srgb, var(--pattern-ink) 9%, transparent) 12%,
+    color-mix(in srgb, var(--pattern-ink) 8%, transparent) 25%,
+    color-mix(in srgb, var(--pattern-ink) 6%, transparent) 40%,
+    color-mix(in srgb, var(--pattern-ink) 3.5%, transparent) 58%,
+    color-mix(in srgb, var(--pattern-ink) 2%, transparent) 72%,
+    transparent 92%
+  );
+
+  mask-image: url("/brand/patterns/texture1.svg");
+  mask-size: 320px;
+  mask-repeat: repeat;
+  -webkit-mask-image: url("/brand/patterns/texture1.svg");
+  -webkit-mask-size: 320px;
+  -webkit-mask-repeat: repeat;
+}
+
+/* ------------------------------------------------------------------ *
+ * 7. Ministry lockup
+ *
+ * Same technique as the pattern field: the SVG is a MASK, never an image,
+ * so the colour comes from --accent and the official file is not
+ * recoloured, filtered, or edited on disk. That is what makes a
+ * single-colour gold lockup legitimate here.
+ *
+ * The two-tone original cannot go on the government bar as-is: its
+ * wordmark is #0F473D, which is 1.53:1 on --gov-bar. Masked gold is
+ * 6.8:1.
+ *
+ * Height comes from a utility; aspect-ratio supplies the width. Behind
+ * @supports so an unsupporting browser renders nothing rather than a
+ * solid gold slab — the aria-label still names the mark.
+ * ------------------------------------------------------------------ */
+.lockup {
+  display: block;
+}
+
+@supports (mask-image: url("#m")) or (-webkit-mask-image: url("#m")) {
+  .lockup {
+    background: var(--accent);
+    mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+  }
+}
+
+.lockup-horizontal {
+  aspect-ratio: 782 / 158;
+  mask-image: url("/brand/logos/momc-horizontal.svg");
+  -webkit-mask-image: url("/brand/logos/momc-horizontal.svg");
+}
+
+/* The republic lockup. The file is a single flat #B9A779, so its alpha is
+   the mark exactly — masking it loses nothing and edits nothing, and the
+   gold comes from --accent like every other lockup. */
+.lockup-republic {
+  aspect-ratio: 807 / 170;
+  mask-image: url("/brand/logos/syrian-horizontal-gold.svg");
+  -webkit-mask-image: url("/brand/logos/syrian-horizontal-gold.svg");
+}
+
+.lockup-vertical {
+  aspect-ratio: 627 / 527;
+  mask-image: url("/brand/logos/momc-vertical.svg");
+  -webkit-mask-image: url("/brand/logos/momc-vertical.svg");
+}
+
+/* ------------------------------------------------------------------ *
+ * 8. Hero crossfade
+ *
+ * One keyframe set for every layer; each layer is offset by one slot with
+ * a negative animation-delay, so N slides need no per-slide CSS. The
+ * percentages below are derived from 3 slides x 7s = a 21s cycle:
+ * a slide holds until 26.2%, fades out by 33.3%, waits, and fades back in
+ * over the final 7.1%. Changing HERO_SLIDE_SECONDS in src/config/home.ts
+ * means changing --hero-slide here too — the captions ride the same
+ * animation and would otherwise drift away from their photographs.
+ *
+ * Opacity only, so this stays on the compositor and never reflows.
+ * ------------------------------------------------------------------ */
+:root {
+  --hero-slide: 7s;
+  --hero-cycle: 21s; /* --hero-slide x number of slides */
+}
+
+@keyframes hero-crossfade {
+  0%,
+  26.2% {
+    opacity: 1;
+  }
+  33.3%,
+  92.9% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: hero-crossfade var(--hero-cycle) var(--ease-standard) infinite;
+}
+
+/* Caption layers are positioned by utilities, so they must not be stretched
+   to the full hero the way the image layers are. */
+p.hero-slide {
+  inset: auto;
+}
+
+/* Stop on the first slide rather than cycling: the page holds still, which
+   is what reduced motion asks for. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    animation: none;
+  }
+  .hero-slide:first-of-type {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * 9. Load screen
+ *
+ * CSS only: no JavaScript, no state, nothing to hydrate. The overlay is in
+ * the server HTML, so it is painted on the first frame, and a single
+ * animation with `forwards` retires it. It covers a document load, not a
+ * route change — soft navigations never re-mount the root layout.
+ *
+ * Deep forest ground, matching the government bar, so the gold lockup
+ * lands on the same colour it does in the header.
+ * ------------------------------------------------------------------ */
+@keyframes site-loader-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--gov-bar);
+  animation: site-loader-out var(--duration-base) var(--ease-standard) 900ms
+    forwards;
+}
+
+/* The global reduce rule already collapses the duration; the delay has to
+   go too, or a reduced-motion user still waits out the splash. */
+@media (prefers-reduced-motion: reduce) {
+  .site-loader {
+    animation-delay: 0ms;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * 10. Interactive map
+ *
+ * transform-box: fill-box makes each path scale about its own centre
+ * rather than the SVG origin, which is the whole trick here. No
+ * JavaScript: hover is CSS, and prefers-reduced-motion already
+ * neutralises the transition above.
+ * ------------------------------------------------------------------ */
+.map-area {
+  fill: var(--muted);
+  stroke: var(--background);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform var(--duration-base) var(--ease-standard),
+    fill var(--duration-fast) var(--ease-standard);
+}
+
+/* Five districts. Neighbouring districts alternate between the primary and
+   accent ramps so no two touching areas read as the same fill — the map
+   never uses colour alone, the name is on hover and in the list beside it. */
+/* Markaz Daraa is the seat, and it was washing out at the pale end of the
+   ramp — it gets the strongest fill. Everything else steps away from its
+   neighbours in either mix or hue. */
+.map-area[data-district="markaz"] {
+  fill: color-mix(in srgb, var(--accent) 70%, var(--surface));
+}
+.map-area[data-district="sanamayn"] {
+  fill: color-mix(in srgb, var(--primary) 38%, var(--surface));
+}
+.map-area[data-district="izra"] {
+  fill: color-mix(in srgb, var(--primary) 18%, var(--surface));
+}
+/* The identity has no red; Deep Umber is the closest family it does have.
+   See --district-umber for why this is its own token. */
+.map-area[data-district="nawa"] {
+  fill: color-mix(in srgb, var(--district-umber) 65%, var(--surface));
+}
+.map-area[data-district="bosra"] {
+  fill: color-mix(in srgb, var(--primary) 58%, var(--surface));
+}
+
+.map-area:hover {
+  fill: var(--primary);
+  transform: scale(1.05);
+}
+
+/* Label revealed on hover/focus. paint-order:stroke draws the halo behind
+   the glyphs, so the name stays readable over any fill underneath. */
+.map-label {
+  fill: var(--foreground);
+  stroke: var(--surface);
+  stroke-width: 7;
+  paint-order: stroke;
+  /* Same order as body: any rule that restates font-family has to restate
+     Lato too, or its digits fall back to Qomra. */
+  font-family:
+    var(--font-lato-digits), var(--font-qomra), system-ui, sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: translateY(4px);
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-base) var(--ease-standard);
+}
+
+.map-item:hover .map-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ponytail: a scaled area can be overlapped by later siblings — SVG has
+   paint order, not z-index. The fill change carries the hover state, so
+   this is cosmetic. Re-order on hover in JS only if it ever reads badly. */
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ *
+ * 9. Tile map (Leaflet)
+ *
+ * Leaflet ships its own stylesheet, which knows nothing about the
+ * identity tokens. These rules re-dress its controls and markers so the
+ * map reads as part of the site rather than a widget dropped into it.
+ * Tiles themselves are left alone: recolouring a basemap makes roads and
+ * water harder to tell apart, and legibility beats matching.
+ * ------------------------------------------------------------------ */
+.leaflet-container {
+  background: var(--muted);
+  font-family: inherit;
+}
+
+.leaflet-control-zoom a,
+.leaflet-bar a {
+  background: var(--surface);
+  color: var(--foreground);
+  border-color: var(--border-strong);
+}
+
+.leaflet-control-zoom a:hover,
+.leaflet-bar a:hover {
+  background: var(--muted);
+  color: var(--primary);
+}
+
+/* WCAG 2.4.7 — Leaflet's own focus style is a faint outline that vanishes
+   against a photograph-heavy basemap. */
+.leaflet-container a:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  color: var(--muted-foreground);
+}
+
+.leaflet-control-attribution a {
+  color: var(--primary);
+}
+
+/* District seat marker: a gold dot with a ring, so it stays visible over
+   both the pale and the built-up parts of the basemap. */
+.map-pin {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--accent);
+  border: 2px solid var(--gov-bar);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--gov-bar) 35%, transparent);
+}
+
+.map-seat-label.leaflet-tooltip {
+  background: var(--gov-bar);
+  color: var(--gov-bar-foreground);
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.map-seat-label.leaflet-tooltip-top::before {
+  border-top-color: var(--gov-bar);
+}
+
+/* ------------------------------------------------------------------ *
+ * 10. Government bar navigation
+ *
+ * Every tab reads the same until you are in it: no tab is coloured just
+ * for being routable. The current one turns gold and draws its rule from
+ * the centre out. The rule is a pseudo-element rather than a border so
+ * the tab does not shift by 2px as it becomes current.
+ *
+ * prefers-reduced-motion is handled globally — the rule still appears,
+ * it simply stops sweeping.
+ * ------------------------------------------------------------------ */
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding-block: 0.625rem;
+  color: color-mix(in srgb, var(--gov-bar-foreground) 80%, transparent);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+
+.nav-link:hover {
+  color: var(--gov-bar-foreground);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(0.6);
+}
+
+.nav-link[aria-current="page"] {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* Sections without a route yet: no hover rule, because there is nowhere
+   for it to lead. The "soon" badge already says why. */
+.nav-link-soon::after {
+  content: none;
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ------------------------------------------------------------------ *
+ * 10. Mobile navigation drawer
+ *
+ * <details> keeps doing the work — open state, keyboard, and the
+ * expanded/collapsed announcement are all native. Only the panel's
+ * entrance is CSS on top.
+ *
+ * Opening animates; closing is instant, because a closed <details>
+ * removes its content from the box tree and there is nothing left to
+ * animate out. Buying the exit would mean holding the panel open in
+ * JavaScript, which is a lot of machinery for 200ms.
+ * ------------------------------------------------------------------ */
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+details[open] > .drawer {
+  animation: drawer-in var(--duration-base) var(--ease-standard) both;
+}

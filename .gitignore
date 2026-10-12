@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Build artifacts
+build/
+dist/
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+.playwright/
+
+# Environment / secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Original font download archive. The three weights the site actually ships
+# live in src/styles/fonts/ and ARE committed. See public/brand/README.md
+assets/fonts/
+
+# Cloudflare Workers / OpenNext build output and local state
+.open-next/
+.wrangler/
+cloudflare-env.d.ts
+
+# Local Worker secrets. Never committed — the real values live in the
+# Cloudflare dashboard, not here.
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# Local Claude Code tooling, not project configuration
+.claude/
+
+# Scratch folder for source assets. The finished files live in public/brand/
+temp-images/
+
+.pnpm-store

@@ -1,0 +1,15 @@
+.next/
+out/
+build/
+coverage/
+pnpm-lock.yaml
+next-env.d.ts
+temp-folder/
+
+# Generated / vendored data — huge and not ours to reformat
+*.geojson
+temp-daraa/
+
+# Cloudflare / OpenNext build output
+.open-next/
+.wrangler/

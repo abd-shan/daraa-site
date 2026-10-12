@@ -1,0 +1,4 @@
+# Prettier writes LF and `check` fails on anything else. Without this, a
+# Windows clone with core.autocrlf=true gets a CRLF working tree and every
+# file fails `prettier --check`. Binaries are detected and left alone.
+* text=auto eol=lf

@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Must match the Worker created in the dashboard. A mismatch deploys to a
+  // second, differently named Worker and the one you are watching stays empty.
+  "name": "daraa-governorate",
+  "main": ".open-next/worker.js",
+  // Serve the *.workers.dev URL. Workers Builds leaves this route off by
+  // default, which returns 404 on every path even when the deploy succeeded.
+  "workers_dev": true,
+  // Today's date, not a future one. Bumping it changes Workers runtime
+  // behaviour, so treat it as a deliberate upgrade, not routine maintenance.
+  "compatibility_date": "2026-07-26",
+  // Required by OpenNext: the Next.js server it bundles uses Node built-ins.
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  // Deliberately no R2, D1, KV, Durable Objects, or Queues. The site has no
+  // database, no cache that outlives a build, and no runtime writes. Adding
+  // any of them would cost money for capacity nothing reads.
+}

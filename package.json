@@ -1,0 +1,61 @@
+{
+  "name": "daraa-governorate-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Official digital portal of Daraa Governorate — foundation phase.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "check": "prettier --check . && eslint && next typegen && tsc --noEmit && node scripts/check-contrast.mjs && vitest run && next build",
+    "check:all": "npm run check && playwright test",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-build": "opennextjs-cloudflare build",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+  },
+  "dependencies": {
+    "iconsax-reactjs": "^0.0.8",
+    "leaflet": "^1.9.4",
+    "next": "16.2.11",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@opennextjs/cloudflare": "1.20.2",
+    "@playwright/test": "^1.62.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.11",
+    "prettier": "^3",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^4.1.10",
+    "wrangler": "4.114.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd",
+      "sharp"
+    ]
+  }
+}
